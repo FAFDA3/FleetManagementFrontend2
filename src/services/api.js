@@ -1,6 +1,8 @@
 import axios from "axios";
+import config from "../../config";
 
-const API = axios.create({ baseURL: "https://mfflettmanagementbackend-6551d4a16fc3.herokuapp.com/api" });
+
+const API = axios.create({ baseURL: `${config.base_url}` });
 
 export const login = (data) => API.post("/login", data);
 export const getRoutes = () => API.get("/routes");
