@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import config from "../../config";
+
 
 const ResetPassword = () => {
   const { token } = useParams();
@@ -21,7 +23,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/auth/reset-password/${token}`,
+        `${config.base_url}/users/reset-password/${token}`,
         { newPassword }
       );
       alert(response.data.message);
