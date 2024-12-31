@@ -22,7 +22,7 @@ const ResetPassword = () => {
     }
 
     try {
-      console.log(`${config.base_url}/users/reset-password/${token}`);
+      console.log('enpoint di reset: ' , `${config.base_url}/users/reset-password/${token}`);
       const response = await axios.post(
         `${config.base_url}/users/reset-password/${token}`,
         { newPassword }
