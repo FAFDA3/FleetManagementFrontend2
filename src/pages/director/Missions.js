@@ -226,7 +226,20 @@ const Missions = () => {
                     <td colSpan="6">
                       <div>
                         <p>Route Details: {mission.routeDetails}</p>
-                        <p>Waypoints: {mission.waypoints}</p>
+
+                        <p>
+                          Waypoints:{" "}
+                          {mission.waypoints.length > 0 ? (
+                            <ul>
+                              {mission.waypoints.map((wp, index) => (
+                                <li key={index}>{wp}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            "No waypoints added."
+                          )}
+                        </p>
+                        
                         <p>Start Time: {mission.startTime}</p>
                         <p>End Time: {mission.endTime}</p>
                         <p>Truck: {mission.truck}</p>

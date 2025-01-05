@@ -10,16 +10,39 @@ const EditMission = ({ mission, onSave, onCancel, drivers }) => {
     truck: mission?.truck || "",
     trailer: mission?.trailer || "",
     driverId: mission?.driverId || "",
+    routeDetails: mission?.routeDetails || "",
+    waypoints: mission?.waypoints || [], // Assuming waypoints is already an array
   });
+
+  const [newWaypoint, setNewWaypoint] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleWaypointAdd = () => {
+    if (newWaypoint.trim() === "") return;
+    setFormData({
+      ...formData,
+      waypoints: [...formData.waypoints, newWaypoint],
+    });
+    setNewWaypoint(""); // Clear the input
+  };
+
+  const handleWaypointRemove = (index) => {
+    const updatedWaypoints = formData.waypoints.filter((_, i) => i !== index);
+    setFormData({ ...formData, waypoints: updatedWaypoints });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    // Convert waypoints array to JSON string only if required by backend
+    const updatedFormData = {
+      ...formData,
+      waypoints: formData.waypoints, // Ensure it remains an array
+    };
+    onSave(updatedFormData);
   };
 
   return (
@@ -43,6 +66,56 @@ const EditMission = ({ mission, onSave, onCancel, drivers }) => {
           onChange={handleChange}
           required
         />
+      </div>
+      <div>
+        <label>Route Details:</label>
+        <textarea
+          name="routeDetails"
+          value={formData.routeDetails}
+          onChange={handleChange}
+          required
+          style={{ width: "100%", minHeight: "50px" }}
+        />
+      </div>
+      <div>
+        <label>Waypoints:</label>
+        <div>
+          <input
+            type="text"
+            value={newWaypoint}
+            onChange={(e) => setNewWaypoint(e.target.value)}
+            placeholder="Enter waypoint address"
+            style={{ width: "80%" }}
+          />
+          <button
+            type="button"
+            onClick={handleWaypointAdd}
+            style={{ marginLeft: "10px", padding: "5px 10px" }}
+          >
+            Add
+          </button>
+        </div>
+        <ul style={{ marginTop: "10px", listStyleType: "none", padding: 0 }}>
+          {formData.waypoints.map((waypoint, index) => (
+            <li key={index} style={{ marginBottom: "5px" }}>
+              {waypoint}
+              <button
+                type="button"
+                onClick={() => handleWaypointRemove(index)}
+                style={{
+                  marginLeft: "10px",
+                  padding: "2px 5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
       <div>
         <label>Status:</label>
@@ -92,6 +165,7 @@ const EditMission = ({ mission, onSave, onCancel, drivers }) => {
       <div>
         <label>Driver:</label>
         <select name="driverId" value={formData.driverId} onChange={handleChange}>
+          <option value="" disabled>Select a driver</option>
           {drivers.map((driver) => (
             <option key={driver.id} value={driver.id}>
               {driver.name} {driver.surname}
@@ -101,7 +175,11 @@ const EditMission = ({ mission, onSave, onCancel, drivers }) => {
       </div>
       <div style={{ marginTop: "10px" }}>
         <button type="submit">Save</button>
-        <button type="button" onClick={onCancel} style={{ marginLeft: "10px", backgroundColor: "red", color: "white" }}>
+        <button
+          type="button"
+          onClick={onCancel}
+          style={{ marginLeft: "10px", backgroundColor: "red", color: "white" }}
+        >
           Cancel
         </button>
       </div>
